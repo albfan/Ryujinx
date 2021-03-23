@@ -324,7 +324,7 @@ namespace Ryujinx.HLE.HOS
                 SignalDisplayResolutionChange();
 
                 // Reconfigure controllers
-                Device.Hid.RefreshInputConfig(ConfigurationState.Instance.Hid.InputConfig.Value);
+                Device.Hid.RefreshInputConfig(ConfigurationState.Instance.Hid.InputConfigNew.Value);
 
                 Logger.Info?.Print(LogClass.Application, $"IsDocked toggled to: {State.DockedMode}");
             }
