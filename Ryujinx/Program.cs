@@ -13,6 +13,13 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using Ryujinx.Ui.App;
+using Ryujinx.HLE.FileSystem;
+using Ryujinx.HLE.FileSystem.Content;
+using JsonHelper = Ryujinx.Common.Utilities.JsonHelper;
+using System.Text;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Ryujinx
 {
@@ -25,11 +32,12 @@ namespace Ryujinx
         public static string ConfigurationPath { get; set; }
 
         static void Main(string[] args)
-        { 
+        {
             // Parse Arguments.
             string launchPathArg      = null;
             string baseDirPathArg     = null;
             bool   startFullscreenArg = false;
+            bool   listGames = false;
 
             for (int i = 0; i < args.Length; ++i)
             {
@@ -49,6 +57,10 @@ namespace Ryujinx
                 else if (arg == "-f" || arg == "--fullscreen")
                 {
                     startFullscreenArg = true;
+                }
+                else if (arg == "--list-games")
+                {
+                    listGames = true;
                 }
                 else if (launchPathArg == null)
                 {
@@ -126,6 +138,28 @@ namespace Ryujinx
             if (startFullscreenArg)
             {
                 ConfigurationState.Instance.Ui.StartFullscreen.Value = true;
+            }
+
+            if (listGames)
+            {
+
+                ArrayList gameMetadataArray = new ArrayList();
+                VirtualFileSystem virtualFileSystem      = VirtualFileSystem.CreateInstance();
+                ContentManager contentManager         = new ContentManager(virtualFileSystem);
+                ApplicationLibrary applicationLibrary = new ApplicationLibrary(virtualFileSystem);
+                applicationLibrary.ApplicationAdded  += delegate(object sender, ApplicationAddedEventArgs args)
+                {
+                    Dictionary<string, string> data = new Dictionary<string, string>
+                    {
+                        { "path", args.AppData.Path },
+                        { "titleName", args.AppData.TitleName },
+                        { "icon", Convert.ToBase64String(args.AppData.Icon, 0, args.AppData.Icon.Length, Base64FormattingOptions.InsertLineBreaks) }
+                    };
+                    gameMetadataArray.Add(data);
+                };
+                applicationLibrary.LoadApplications(ConfigurationState.Instance.Ui.GameDirs, ConfigurationState.Instance.System.Language);
+                System.Console.Write(JsonHelper.Serialize(gameMetadataArray, true));
+                return;
             }
 
             // Logging system information.
