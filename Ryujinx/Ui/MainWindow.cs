@@ -529,6 +529,7 @@ namespace Ryujinx.Ui
 
                 Logger.Notice.Print(LogClass.Application, $"Using Firmware Version: {firmwareVersion?.VersionString}");
 
+                bool runOnce = false;
                 if (Directory.Exists(path))
                 {
                     string[] romFsFiles = Directory.GetFiles(path, "*.istorage");
@@ -565,6 +566,7 @@ namespace Ryujinx.Ui
                         case ".pfs0":
                             Logger.Info?.Print(LogClass.Application, "Loading as NSP.");
                             _emulationContext.LoadNsp(path);
+                            runOnce = true;
                             break;
                         default:
                             Logger.Info?.Print(LogClass.Application, "Loading as Homebrew.");
@@ -594,11 +596,11 @@ namespace Ryujinx.Ui
 
                 Translator.IsReadyForTranslation.Reset();
 #if MACOS_BUILD
-                CreateGameWindow();
+                CreateGameWindow(runOnce);
 #else
                 Thread windowThread = new Thread(() =>
                 {
-                    CreateGameWindow();
+                    CreateGameWindow(runOnce);
                 })
                 {
                     Name = "GUI.WindowThread"
@@ -624,7 +626,7 @@ namespace Ryujinx.Ui
             }
         }
 
-        private void CreateGameWindow()
+        private void CreateGameWindow(bool runOnce)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
@@ -663,6 +665,10 @@ namespace Ryujinx.Ui
 
             _emulationContext.Dispose();
             _deviceExitStatus.Set();
+            if (runOnce)
+            {
+                End();
+            }
 
             // NOTE: Everything that is here will not be executed when you close the UI.
             Application.Invoke(delegate
