@@ -13,6 +13,7 @@ using Ryujinx.Common.Logging;
 using Ryujinx.Common.System;
 using Ryujinx.Configuration;
 using Ryujinx.Gamepad;
+using Ryujinx.Gamepad.GTK3;
 using Ryujinx.Gamepad.SDL2;
 using Ryujinx.Graphics.GAL;
 using Ryujinx.Graphics.OpenGL;
@@ -119,6 +120,9 @@ namespace Ryujinx.Ui
         private MainWindow(Builder builder) : base(builder.GetObject("_mainWin").Handle)
         {
             builder.Autoconnect(this);
+
+            KeyPressEvent += OnKeyPress;
+            KeyReleaseEvent += OnKeyRelease;
 
             // Apply custom theme if needed.
             ThemeHelper.ApplyTheme();
@@ -227,12 +231,24 @@ namespace Ryujinx.Ui
             Task.Run(RefreshFirmwareLabel);
 
             // FIXME: test on linux and check if pthread double init issue happen on Linux still with GTK3.......
-            InputManager = new InputManager();
+            InputManager = new InputManager(new GTK3KeyboardDriver(this), new SDL2GamepadDriver());
         }
 
         private void WindowStateEvent_Changed(object o, WindowStateEventArgs args)
         {
             _fullScreen.Label = args.Event.NewWindowState.HasFlag(Gdk.WindowState.Fullscreen) ? "Exit Fullscreen" : "Enter Fullscreen";
+        }
+
+        [GLib.ConnectBefore]
+        protected void OnKeyPress(object sender, KeyPressEventArgs args)
+        {
+            Logger.Error?.Print(LogClass.Application, args.Event.Key.ToString());
+        }
+
+        [GLib.ConnectBefore]
+        protected void OnKeyRelease(object sender, KeyReleaseEventArgs args)
+        {
+            Logger.Error?.Print(LogClass.Application, args.Event.Key.ToString());
         }
 
         private void UpdateColumns()
