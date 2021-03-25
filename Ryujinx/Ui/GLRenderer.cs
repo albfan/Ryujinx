@@ -37,6 +37,7 @@ namespace Ryujinx.Ui
         public ManualResetEvent WaitEvent { get; set; }
 
         public static event EventHandler<StatusUpdatedEventArgs> StatusUpdatedEvent;
+        public event EventHandler<ComboPressedEventArgs>         ComboPressed;
 
         private bool _isActive;
         private bool _isStopped;
@@ -614,6 +615,16 @@ namespace Ryujinx.Ui
                     };
                 }
 
+                ControllerKeys specialCombo1 = ControllerKeys.Minus|ControllerKeys.L|ControllerKeys.Plus|ControllerKeys.R;
+                ControllerKeys specialCombo2 = ControllerKeys.Minus|ControllerKeys.Plus;
+
+                if ((currentButton & specialCombo1) == specialCombo1) {
+                    OnComboPressed(new ComboPressedEventArgs(1));
+                }
+                else if ((currentButton & specialCombo2) == specialCombo2) {
+                    OnComboPressed(new ComboPressedEventArgs(2));
+                }
+
                 currentButton |= _device.Hid.UpdateStickButtons(leftJoystick, rightJoystick);
 
                 motionDevice.Poll(inputConfig, inputConfig.Slot);
@@ -742,5 +753,11 @@ namespace Ryujinx.Ui
 
             return true;
         }
+
+        protected void OnComboPressed(ComboPressedEventArgs args)
+        {
+            ComboPressed?.Invoke(null, args);
+        }
+
     }
 }

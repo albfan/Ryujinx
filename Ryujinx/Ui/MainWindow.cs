@@ -636,6 +636,10 @@ namespace Ryujinx.Ui
             DisplaySleep.Prevent();
 
             GlRendererWidget = new GlRenderer(_emulationContext, ConfigurationState.Instance.Logger.GraphicsDebugLevel);
+            if (runOnce)
+            {
+                GlRendererWidget.ComboPressed += Combo_Pressed;
+            }
 
             Application.Invoke(delegate
             {
@@ -716,6 +720,26 @@ namespace Ryujinx.Ui
                 _firmwareInstallFile.Sensitive      = true;
                 _firmwareInstallDirectory.Sensitive = true;
             });
+        }
+
+        private void Combo_Pressed(object sender, ComboPressedEventArgs args)
+        {
+            if (args.Combo == 1)
+            {
+                Logger.Info?.Print(LogClass.Application, "Exit from game");
+                Thread applicationLibraryThread = new Thread(() =>
+                {
+                    End();
+                });
+                applicationLibraryThread.Name         = "GUI.ApplicationLibraryThread";
+                applicationLibraryThread.IsBackground = true;
+                applicationLibraryThread.Start();
+            }
+            else if (args.Combo == 2)
+            {
+                Logger.Info?.Print(LogClass.Application, "WakeupCombo");
+                Simulate_WakeUp_Message_Pressed(null, null);
+            }
         }
 
         private void RecreateFooterForMenu()
