@@ -150,8 +150,8 @@ namespace Ryujinx.HLE
             };
 
             // Configure controllers
-            Hid.RefreshInputConfig(ConfigurationState.Instance.Hid.InputConfigNew.Value);
-            ConfigurationState.Instance.Hid.InputConfigNew.Event += Hid.RefreshInputConfigEvent;
+            Hid.RefreshInputConfig(ConfigurationState.Instance.Hid.InputConfig.Value);
+            ConfigurationState.Instance.Hid.InputConfig.Event += Hid.RefreshInputConfigEvent;
 
             Logger.Info?.Print(LogClass.Application, $"AudioBackend: {ConfigurationState.Instance.System.AudioBackend.Value}");
             Logger.Info?.Print(LogClass.Application, $"IsDocked: {ConfigurationState.Instance.System.EnableDockedMode.Value}");
@@ -227,7 +227,7 @@ namespace Ryujinx.HLE
         {
             if (disposing)
             {
-                ConfigurationState.Instance.Hid.InputConfigNew.Event -= Hid.RefreshInputConfigEvent;
+                ConfigurationState.Instance.Hid.InputConfig.Event -= Hid.RefreshInputConfigEvent;
 
                 System.Dispose();
                 Host1x.Dispose();
