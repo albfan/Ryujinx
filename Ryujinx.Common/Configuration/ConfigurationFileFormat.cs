@@ -209,6 +209,11 @@ namespace Ryujinx.Configuration
         public string CustomThemePath { get; set; }
 
         /// <summary>
+        /// Path to custom GUI theme
+        /// </summary>
+        public string MonitorModel { get; set; }
+
+        /// <summary>
         /// Start games in fullscreen mode
         /// </summary>
         public bool StartFullscreen { get; set; }

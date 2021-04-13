@@ -1175,6 +1175,25 @@ namespace Ryujinx.Ui
         {
             if (!Window.State.HasFlag(Gdk.WindowState.Fullscreen))
             {
+                string monitorModel = ConfigurationState.Instance.Ui.MonitorModel.Value;
+                if (monitorModel != null)
+                {
+                    Gdk.Display display = Gdk.Display.Default;
+                    int monitor_count = display.DefaultScreen.NMonitors;
+                    for(int i = 0; i < monitor_count; i++)
+                    {
+                        Gdk.Monitor monitor = display.GetMonitor(i);
+                        string model = monitor.Model;
+                        string manufacturer = monitor.Manufacturer;
+                        Logger.Info?.Print(LogClass.Application, $"monitor {i}: model {model}, manufacturer {manufacturer}");
+                        if (model == monitorModel)
+                        {
+                            Gdk.Rectangle rect = display.DefaultScreen.GetMonitorGeometry(i);
+                            Move(rect.X,rect.Y);
+			    break;
+                        }
+                    }
+                }
                 Fullscreen();
 
                 ToggleExtraWidgets(false);

@@ -39,6 +39,7 @@ namespace Ryujinx
             // Parse Arguments.
             string launchPathArg      = null;
             string baseDirPathArg     = null;
+            string monitorModel       = null;
             bool   startFullscreenArg = false;
             bool   listGames = false;
             bool   showVersion = false;
@@ -51,7 +52,7 @@ namespace Ryujinx
                 {
                     if (i + 1 >= args.Length)
                     {
-                        Logger.Error?.Print(LogClass.Application, $"Invalid option '{arg}'");
+                        Logger.Error?.Print(LogClass.Application, $"Option '{arg}' nees an argument");
 
                         continue;
                     }
@@ -69,6 +70,7 @@ namespace Ryujinx
 -h, --help         Show this help
 -v, --version      Show Ryujinx version
 -f, --fullscreen   Run in fullscreen
+    --move         Move to monitor model
     --list-games   List Available games in json format
 
 ");
@@ -77,6 +79,17 @@ namespace Ryujinx
                 else if (arg == "-f" || arg == "--fullscreen")
                 {
                     startFullscreenArg = true;
+                }
+                else if (arg == "--move")
+                {
+                    if (i + 1 >= args.Length)
+                    {
+                        Logger.Error?.Print(LogClass.Application, $"Option '{arg}' nees an argument");
+
+                        continue;
+                    }
+
+                    monitorModel = args[++i];
                 }
                 else if (arg == "--list-games")
                 {
@@ -166,6 +179,8 @@ namespace Ryujinx
             {
                 ConfigurationState.Instance.Ui.StartFullscreen.Value = true;
             }
+
+            ConfigurationState.Instance.Ui.MonitorModel.Value = monitorModel;
 
             if (listGames)
             {

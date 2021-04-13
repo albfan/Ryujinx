@@ -87,6 +87,11 @@ namespace Ryujinx.Configuration
             /// </summary>
             public ReactiveObject<bool> StartFullscreen { get; private set; }
 
+            /// <summary>
+            /// Path to custom GUI theme
+            /// </summary>
+            public ReactiveObject<string> MonitorModel { get; private set; }
+
             public UiSection()
             {
                 GuiColumns        = new Columns();
@@ -95,6 +100,7 @@ namespace Ryujinx.Configuration
                 EnableCustomTheme = new ReactiveObject<bool>();
                 CustomThemePath   = new ReactiveObject<string>();
                 StartFullscreen   = new ReactiveObject<bool>();
+                MonitorModel      = new ReactiveObject<string>();
             }
         }
 
@@ -447,6 +453,7 @@ namespace Ryujinx.Configuration
                 GameDirs                  = Ui.GameDirs,
                 EnableCustomTheme         = Ui.EnableCustomTheme,
                 CustomThemePath           = Ui.CustomThemePath,
+                MonitorModel              = Ui.MonitorModel,
                 StartFullscreen           = Ui.StartFullscreen,
                 EnableKeyboard            = Hid.EnableKeyboard,
                 Hotkeys                   = Hid.Hotkeys,
@@ -507,6 +514,7 @@ namespace Ryujinx.Configuration
             Ui.GameDirs.Value                      = new List<string>();
             Ui.EnableCustomTheme.Value             = false;
             Ui.CustomThemePath.Value               = "";
+            Ui.MonitorModel.Value                  = "";
             Ui.StartFullscreen.Value               = false;
             Hid.EnableKeyboard.Value               = false;
             Hid.Hotkeys.Value = new KeyboardHotkeys
@@ -836,6 +844,7 @@ namespace Ryujinx.Configuration
             Ui.GameDirs.Value                      = configurationFileFormat.GameDirs;
             Ui.EnableCustomTheme.Value             = configurationFileFormat.EnableCustomTheme;
             Ui.CustomThemePath.Value               = configurationFileFormat.CustomThemePath;
+            Ui.MonitorModel.Value                  = configurationFileFormat.MonitorModel;
             Ui.StartFullscreen.Value               = configurationFileFormat.StartFullscreen;
             Hid.EnableKeyboard.Value               = configurationFileFormat.EnableKeyboard;
             Hid.Hotkeys.Value                      = configurationFileFormat.Hotkeys;
