@@ -27,6 +27,11 @@ namespace Ryujinx.Input
         string Name { get; }
 
         /// <summary>
+        /// The Joystick name of the gamepad.
+        /// </summary>
+        string JoystickName { get; }
+
+        /// <summary>
         /// True if the gamepad is connected.
         /// </summary>
         bool IsConnected { get; }

@@ -81,6 +81,7 @@ namespace Ryujinx.Input.SDL2
             _buttonsUserMapping = new List<ButtonMappingEntry>();
 
             Name = SDL_GameControllerName(_gamepadHandle);
+            JoystickName = SDL_JoystickName(SDL_GameControllerGetJoystick(_gamepadHandle));
             Id = driverId;
             Features = GetFeaturesFlag();
             _triggerThreshold = 0.0f;
@@ -115,6 +116,7 @@ namespace Ryujinx.Input.SDL2
 
         public string Id { get; }
         public string Name { get; }
+        public string JoystickName { get; }
 
         public bool IsConnected => SDL_GameControllerGetAttached(_gamepadHandle) == SDL_bool.SDL_TRUE;
 

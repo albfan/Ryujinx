@@ -264,7 +264,7 @@ namespace Ryujinx.Ui.Windows
             {
                 IGamepad gamepad = _mainWindow.InputManager.GamepadDriver.GetGamepad(id);
 
-                if (gamepad != null)
+                if (gamepad != null && !gamepad.JoystickName.Contains(" IMU") )
                 {
                     _inputDevice.Append($"controller/{id}", GetShrinkedGamepadName($"{gamepad.Name} ({id})"));
 

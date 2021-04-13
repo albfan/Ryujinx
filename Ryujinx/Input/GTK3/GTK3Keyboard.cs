@@ -26,6 +26,7 @@ namespace Ryujinx.Input.GTK3
             _driver = driver;
             Id = id;
             Name = name;
+            JoystickName = name;
             _buttonsUserMapping = new List<ButtonMappingEntry>();
         }
 
@@ -34,6 +35,7 @@ namespace Ryujinx.Input.GTK3
         public string Id { get; }
 
         public string Name { get; }
+        public string JoystickName { get; }
 
         public bool IsConnected => true;
 
